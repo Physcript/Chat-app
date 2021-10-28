@@ -36,14 +36,13 @@ async function START ( typeDefs,resolvers ) {
 
     // use
     app.use(cookieParser())
-    // app.use(cors(corsOptions))
+    app.use(cors(corsOptions))
     app.use(graphqlUploadExpress())
 
     // setup apollo
     const httpServer = createServer(app)
     const APOLLO_SERVER = new ApolloServer({
         schema,
-        cors: corsOptions,
         context: ({req,res}) => ({req,res}),
         plugins: [{
             async serverWillStart(){
@@ -62,7 +61,7 @@ async function START ( typeDefs,resolvers ) {
     await APOLLO_SERVER.start()
     APOLLO_SERVER.applyMiddleware({
         app,
-        //cors: corsOptions
+        cors: false
     })
 
     // setup connection
