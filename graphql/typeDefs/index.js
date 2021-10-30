@@ -1,14 +1,5 @@
 const { gql } = require('apollo-server-express')
+const dummiesDefs = require('./dummies')
+const userDefs = require('./users')
 
-module.exports = gql`
-    scalar Upload
-    type Query {
-        dummy: String
-    }
-    type Mutation {
-        dummy: String
-    }
-    type Subscription {
-        dummy: String
-    }
-`
+module.exports = [ dummiesDefs,userDefs ]
