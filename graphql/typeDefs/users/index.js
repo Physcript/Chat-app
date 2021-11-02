@@ -17,14 +17,32 @@ module.exports = gql`
 
     }
 
+    type Me {
+        email: String
+        displayName: String
+        image: String
+        verified: Boolean
+        createdAt: String
+    }
+
+    type Auth_Me {
+        user: Me
+        valid: Boolean
+    }
+
+    type Token {
+        loginToken: String
+    }
+
     type Query {
 
         _dummy: String
+        authenticateUser: Auth_Me
 
     }
     type Mutation {
 
-        createUser(
+        createUser (
 
             email: String
             password: String
@@ -33,6 +51,13 @@ module.exports = gql`
             image: String
 
         ): String
+
+        loginUser (
+
+            email: String
+            password: String
+
+        ): Token
     }
 
 `

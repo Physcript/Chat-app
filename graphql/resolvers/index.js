@@ -2,6 +2,7 @@
 
 const dummieResolvers = require('./dummies')
 const userResolvers = require('./users')
+const roomResolvers = require('./rooms')
 
 module.exports = {
     Query: {
@@ -11,6 +12,7 @@ module.exports = {
     Mutation: {
         ...dummieResolvers.Mutation,
         ...userResolvers.Mutation,
+        ...roomResolvers.Mutation
     },
     Subscription: {
         ...dummieResolvers.Subscription,

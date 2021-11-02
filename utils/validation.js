@@ -92,7 +92,32 @@ const CREATE_USER_PROCESS = async (password) => {
 }
 
 
+const LOGIN_USER_VALIDATION = (email,password) => {
+
+    const errors = {}
+
+    validateEmpty(email,password)
+
+    return {
+        errors
+    }
+
+    function validateEmpty(email,password) {
+        if(email.trim() == '') {
+            errors.email = 'Required'
+        }
+        if(password.trim() == '') {
+            errors.password = 'Required'
+        }
+    }
+
+}
+
+
+
+
 module.exports = {
     CREATE_USER_VALIDATION,
-    CREATE_USER_PROCESS
+    CREATE_USER_PROCESS,
+    LOGIN_USER_VALIDATION
 }
