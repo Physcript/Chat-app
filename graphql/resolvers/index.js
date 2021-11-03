@@ -8,6 +8,7 @@ module.exports = {
     Query: {
         ...dummieResolvers.Query,
         ...userResolvers.Query,
+        ...roomResolvers.Query,
     },
     Mutation: {
         ...dummieResolvers.Mutation,
