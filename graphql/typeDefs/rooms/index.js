@@ -17,7 +17,7 @@ module.exports = gql`
     type Mutation {
 
         createRoom(name: String): String
-        joinRoom(roomId: String): String
+        joinRoom(roomId: String): RoomInfo
 
     }
 

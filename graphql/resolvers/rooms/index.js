@@ -2,7 +2,8 @@
 const mongoose = require('mongoose')
 
 const { AUTHENTICATE_HOME } = require('../../../utils/authenticate')
-const { UserInputError } = require('apollo-server-express')
+const { JOIN_USER_ROOM_VALIDATION } = require('../../../utils/validation')
+const { UserInputError,AuthenticationError } = require('apollo-server-express')
 
 // model
 const Room = require('../../../models/Room')
@@ -37,6 +38,43 @@ async function getAllRoom () {
     return rooms
 }
 
+async function getRoom (id) {
+
+    const rooms = await Room.aggregate([
+        {
+            $match: {
+                "_id": mongoose.Types.ObjectId(id)
+            }
+        },
+        {
+            $project: {
+                "_id": "$_id",
+                "name": "$name"
+            }
+        },
+        {
+            $lookup: {
+                from: 'roomstatuses',
+                localField: '_id',
+                foreignField: 'roomId',
+                as: "roomCount"
+            }
+        },
+        {
+            $project: {
+                "_id": 1,
+                "name": 1,
+                "count": { $size: {$ifNull : ["$roomCount", []] } }
+            }
+        }
+
+
+    ])
+    return rooms
+}
+
+
+
 
 module.exports = {
     Query: {
@@ -44,7 +82,6 @@ module.exports = {
 
             const rooms = await getAllRoom()
             return rooms
-
 
         }
     },
@@ -54,19 +91,24 @@ module.exports = {
     Mutation: {
         async joinRoom(_,{roomId},context) {
 
-
-            user = "61813f0374c0f3266cbca6a5"
-            room = "6182045e59918325e077f125"
+            // validate user
+            let { user,valid } = await AUTHENTICATE_HOME(context)
+            if( !valid ) throw new AuthenticationError()
+            await JOIN_USER_ROOM_VALIDATION(user)
 
             const rs = new RoomStatus({
-                roomId: mongoose.Types.ObjectId(room),
-                userId: mongoose.Types.ObjectId(user),
+                roomId: mongoose.Types.ObjectId(roomId),
+                userId: mongoose.Types.ObjectId(user._id),
             })
 
             await rs.save()
-
-            return "joined"
-
+            const room = await getRoom(roomId)
+            const roomInfo = {
+                _id: room[0]._id,
+                name: room[0].name,
+                count: room[0].count
+            }
+            return roomInfo
         },
         async createRoom(_,{name},context) {
 

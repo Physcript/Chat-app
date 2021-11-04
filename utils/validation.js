@@ -1,7 +1,11 @@
 
 const User = require('../models/User')
+const Room = require('../models/Room')
+const RoomStatus = require('../models/RoomStatus')
+
 const validator = require('validator')
 const bcrypt = require('bcrypt')
+const { findOne } = require('../models/User')
 
 const CREATE_USER_VALIDATION = async (email,password,confirmPassword,displayName) => {
     const errors = {}
@@ -114,10 +118,23 @@ const LOGIN_USER_VALIDATION = (email,password) => {
 }
 
 
+/// Room
+
+const JOIN_USER_ROOM_VALIDATION = async (user) => {
+    const userx = await User.findOne({email: user.email})
+    if(!user) return
+
+    const room = await RoomStatus.findOneAndDelete({userId: user._id})
+    return
+
+}
+
+
 
 
 module.exports = {
     CREATE_USER_VALIDATION,
     CREATE_USER_PROCESS,
-    LOGIN_USER_VALIDATION
+    LOGIN_USER_VALIDATION,
+    JOIN_USER_ROOM_VALIDATION
 }

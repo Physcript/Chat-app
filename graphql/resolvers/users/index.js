@@ -60,7 +60,7 @@ module.exports = {
                 }
         },
         async loginUser(_,{email,password},context) {
-            console.log(context.req.headers)
+
             const { errors } = await LOGIN_USER_VALIDATION(email,password)
 
             if(Object.keys(errors).length >= 1) {
