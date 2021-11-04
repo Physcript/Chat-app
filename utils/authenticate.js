@@ -1,6 +1,9 @@
 
 require('dotenv').config()
+
 const User = require('../models/User')
+const Room = require('../models/Room')
+
 const jwt = require('jsonwebtoken')
 
 const AUTHENTICATE_HOME = async (context) => {
@@ -40,6 +43,17 @@ const AUTHENTICATE_HOME = async (context) => {
 }
 
 
+const AUTHENTICATE_ROOM = async (id) => {
+    const room = await Room.findById(id)
+    return {
+        room,
+        valid: room ? true : false
+    }
+
+
+}
+
 module.exports = {
-    AUTHENTICATE_HOME
+    AUTHENTICATE_HOME,
+    AUTHENTICATE_ROOM
 }

@@ -129,6 +129,21 @@ const JOIN_USER_ROOM_VALIDATION = async (user) => {
 
 }
 
+const VALID_MESSAGE_VALIDATION = async (body) => {
+    let valid = false
+
+    if( body.trim() == '' ){
+        return {
+            valid: false
+        }
+    }
+
+    return {
+        valid: true
+    }
+
+}
+
 
 
 
@@ -136,5 +151,6 @@ module.exports = {
     CREATE_USER_VALIDATION,
     CREATE_USER_PROCESS,
     LOGIN_USER_VALIDATION,
-    JOIN_USER_ROOM_VALIDATION
+    JOIN_USER_ROOM_VALIDATION,
+    VALID_MESSAGE_VALIDATION
 }
