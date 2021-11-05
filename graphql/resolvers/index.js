@@ -10,6 +10,7 @@ module.exports = {
         ...dummieResolvers.Query,
         ...userResolvers.Query,
         ...roomResolvers.Query,
+        ...messegeResolvers.Query,
     },
     Mutation: {
         ...dummieResolvers.Mutation,
