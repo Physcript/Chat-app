@@ -21,12 +21,16 @@ module.exports = gql`
         userId: String,
         user: M_User
 
-    }
+        }
 
-    type Query {
-        messageRoom(roomId: String): [M_Message]
-    }
-    type Mutation {
-        sendMessage(body: String,roomId: String): String
-    }
-`
+        type Query {
+            messageRoom(roomId: String): [M_Message]
+        }
+        type Mutation {
+            sendMessage(body: String,roomId: String): String
+        }
+
+        type Subscription {
+            refreshMessage(roomId: String, token: String): String
+        }
+    `

@@ -20,5 +20,6 @@ module.exports = {
     },
     Subscription: {
         ...dummieResolvers.Subscription,
+        ...messegeResolvers.Subscription,
     }
 }

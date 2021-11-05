@@ -1,5 +1,9 @@
 
+require('dotenv').config()
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
+
+const { PubSub,withFilter } = require('graphql-subscriptions')
 
 const { AUTHENTICATE_HOME,AUTHENTICATE_ROOM } = require('../../../utils/authenticate')
 const { VALID_MESSAGE_VALIDATION } = require('../../../utils/validation')
@@ -7,6 +11,7 @@ const { AuthenticationError } = require('apollo-server-express')
 
 const Message = require('../../../models/Message')
 
+const pubsub = new PubSub()
 
 module.exports = {
     Query: {
@@ -47,11 +52,72 @@ module.exports = {
 
             }
 
+
+            pubsub.publish('NEW_MESSAGE',{
+                refreshMessage: "asddd"
+            })
+
             return "Messaged"
 
         }
+    },
+
+
+    Subscription: {
+        refreshMessage: {
+            subscribe: withFilter (
+                (_,{},context) => pubsub.asyncIterator(['NEW_MESSAGE']),
+                async (payload,variables,context,authToken) => {
+
+                    const users = await getUserId(variables.roomId)
+                    const user = await getId(variables.token)
+                    let valid = false
+
+                    for( const data of users ) {
+
+                        const check = data.toString()
+                        if(check == user){
+                            valid = true
+                        }
+
+
+                    }
+
+
+                    return valid
+                }
+            )
+        }
     }
 }
+
+
+async function getUserId(roomId){
+
+    const users = await Message.distinct('userId')
+    return users
+}
+
+async function getId(token){
+
+    const decode = jwt.verify(token,process.env.JWT_SECRET)
+
+    const user = decode._id
+
+    return user
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
