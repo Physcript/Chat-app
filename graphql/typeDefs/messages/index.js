@@ -16,7 +16,7 @@ module.exports = gql`
     type M_Message {
         _id: String
         body: String
-        created:String
+        createdAt:String
         roomId: String,
         userId: String,
         user: M_User
