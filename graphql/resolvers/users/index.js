@@ -1,12 +1,15 @@
 
 const bcrypt = require('bcrypt')
+const mongoose = require('mongoose')
 
 const { CREATE_USER_VALIDATION,CREATE_USER_PROCESS,LOGIN_USER_VALIDATION } = require('../../../utils/validation')
 const { GENERATE_LOGIN_TOKEN } = require('../../../utils/generate')
 const { AUTHENTICATE_HOME } = require('../../../utils/authenticate')
 
 const { UserInputError } = require('apollo-server-express')
+
 const User = require('../../../models/User')
+const RoomStatus = require('../../../models/RoomStatus')
 
 module.exports = {
     Query: {
@@ -28,6 +31,13 @@ module.exports = {
 
     },
     Mutation: {
+
+        async closeWindow(_,{userId},context) {
+            const { user } = await AUTHENTICATE_HOME(context)
+            const id =  user._id
+            await RoomStatus.findOneAndDelete({userId: mongoose.Types.ObjectId(id)})
+            return "asd"
+        },
 
         async createUser(
             _,

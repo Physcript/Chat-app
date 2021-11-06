@@ -21,4 +21,8 @@ module.exports = gql`
 
     }
 
+    type Subscription {
+        refreshRoom: String
+    }
+
 `

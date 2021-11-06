@@ -58,6 +58,11 @@ module.exports = gql`
             password: String
 
         ): Token
+
+        closeWindow (
+            userId: String
+        ): String
+
     }
 
 `

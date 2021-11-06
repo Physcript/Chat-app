@@ -9,6 +9,11 @@ const { UserInputError,AuthenticationError } = require('apollo-server-express')
 const Room = require('../../../models/Room')
 const RoomStatus = require('../../../models/RoomStatus')
 
+// sub
+const { PubSub,withFilter } = require('graphql-subscriptions')
+const pubsub = new PubSub()
+
+
 async function getAllRoom () {
     const rooms = await Room.aggregate([
         {
@@ -79,8 +84,8 @@ async function getRoom (id) {
 module.exports = {
     Query: {
         async getRoom(_,{},context){
-
             const rooms = await getAllRoom()
+
             return rooms
 
         }
@@ -89,8 +94,8 @@ module.exports = {
 
 
     Mutation: {
-        async joinRoom(_,{roomId},context) {
 
+        async joinRoom(_,{roomId},context) {
             // validate user
             let { user,valid } = await AUTHENTICATE_HOME(context)
             if( !valid ) throw new AuthenticationError()
@@ -102,13 +107,21 @@ module.exports = {
             })
 
             await rs.save()
+
             const room = await getRoom(roomId)
+
             const roomInfo = {
                 _id: room[0]._id,
                 name: room[0].name,
                 count: room[0].count
             }
+
+            pubsub.publish('JOIN_ROOM',{
+                refreshRoom: "asd"
+            })
+
             return roomInfo
+
         },
         async createRoom(_,{name},context) {
 
@@ -158,6 +171,18 @@ module.exports = {
 
                 await room.save()
             }
+        }
+    },
+    Subscription: {
+        refreshRoom: {
+            subscribe: withFilter (
+                () => pubsub.asyncIterator(['JOIN_ROOM']),
+                () =>  {
+
+                    return true
+                }
+
+            )
         }
     }
 }
