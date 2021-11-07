@@ -54,7 +54,7 @@ module.exports = {
 
 
             pubsub.publish('NEW_MESSAGE',{
-                refreshMessage: "asddd"
+                refreshMessage: 'notif'
             })
 
             return "Messaged"
@@ -66,22 +66,28 @@ module.exports = {
     Subscription: {
         refreshMessage: {
             subscribe: withFilter (
-                (_,{},context) => pubsub.asyncIterator(['NEW_MESSAGE']),
-                async (payload,variables,context,authToken) => {
+                () => pubsub.asyncIterator(['NEW_MESSAGE']),
+                async (variables,payload,context) => {
 
-                    const users = await getUserId(variables.roomId)
-                    const user = await getId(variables.token)
+                    const users = await getUserId(payload.roomId)
+                    const user = await getId(payload.token)
+
+
                     let valid = false
+
 
                     for( const data of users ) {
 
                         const check = data.toString()
+
                         if(check == user){
                             valid = true
                         }
 
 
                     }
+
+
 
 
                     return valid
