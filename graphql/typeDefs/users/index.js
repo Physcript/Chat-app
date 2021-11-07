@@ -63,6 +63,9 @@ module.exports = gql`
             userId: String
         ): String
 
+    },
+    type Subscription {
+        refreshRoomOut: String
     }
 
 `

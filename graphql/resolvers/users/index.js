@@ -11,6 +11,9 @@ const { UserInputError } = require('apollo-server-express')
 const User = require('../../../models/User')
 const RoomStatus = require('../../../models/RoomStatus')
 
+const { PubSub,withFilter } =  require('graphql-subscriptions')
+const pubsub = new PubSub()
+
 module.exports = {
     Query: {
 
@@ -33,6 +36,11 @@ module.exports = {
     Mutation: {
 
         async closeWindow(_,{userId},context) {
+
+            pubsub.publish('OUT_ROOM',{
+                refreshRoomOut: "bye"
+            })
+
             const { user } = await AUTHENTICATE_HOME(context)
             const id =  user._id
             await RoomStatus.findOneAndDelete({userId: mongoose.Types.ObjectId(id)})
@@ -120,6 +128,17 @@ module.exports = {
 
             }
 
+        }
+    },
+    Subscription: {
+        refreshRoomOut: {
+            subscribe: withFilter (
+                () => pubsub.asyncIterator(['OUT_ROOM']),
+                () =>  {
+                    return true
+                }
+
+            )
         }
     }
 }

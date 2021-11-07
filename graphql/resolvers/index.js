@@ -22,5 +22,6 @@ module.exports = {
         ...dummieResolvers.Subscription,
         ...messegeResolvers.Subscription,
         ...roomResolvers.Subscription,
+        ...userResolvers.Subscription,
     }
 }
